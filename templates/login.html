@@ -1,0 +1,15 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="{% static 'js/script.js' %}"></script>
+
+<form method="POST">
+    <h2>Login Form</h2>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Login</button>
+    <p>
+        <a href="{% url 'forgot-password' %}">Forgot Password?</a>
+    </p>
+</form>
+
+

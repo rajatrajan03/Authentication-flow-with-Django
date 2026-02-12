@@ -1,0 +1,24 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+<script src="{% static 'js/script.js' %}" defer></script>
+
+<div class="container">
+    <form method="post" class="form-box">
+        {% csrf_token %}
+
+        <h2>Enter OTP</h2>
+
+        <input type="text" name="otp" placeholder="Enter OTP" required>
+
+        <button type="submit">Verify OTP</button>
+
+        <p class="resend-text">
+            Didn’t receive OTP?
+            <a href="{% url 'forgot-password' %}" id="resendBtn">
+                Click to resend
+            </a>
+            <span id="timer"></span>
+        </p>
+
+    </form>
+</div>
