@@ -1,8 +1,8 @@
 // Show / Hide Password function
-function togglePassword(id){
+function togglePassword(id) {
     const input = document.getElementById(id);
 
-    if(input.type === "password"){
+    if (input.type === "password") {
         input.type = "text";
     } else {
         input.type = "password";
@@ -11,11 +11,11 @@ function togglePassword(id){
 
 
 // Simple form validation
-document.addEventListener("submit", function(e){
+document.addEventListener("submit", function (e) {
     const inputs = document.querySelectorAll("input");
 
     inputs.forEach(input => {
-        if(input.value.trim() === ""){
+        if (input.value.trim() === "") {
             alert("Please fill all fields");
             e.preventDefault();
         }
@@ -76,31 +76,75 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 // OTP RESEND TIMER
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function () {
 
     let timeLeft = 60;
-    let timer = document.getElementById("timer");
     let resendBtn = document.getElementById("resendBtn");
 
-    if(!timer || !resendBtn) return;
+    if (!resendBtn) return;
 
     resendBtn.classList.remove("active");
     resendBtn.style.pointerEvents = "none";
 
-    timer.innerHTML = "(60s)";
+    let countdown;
 
-    let countdown = setInterval(() => {
+    function startTimer() {
+        if (countdown) clearInterval(countdown);
 
-        timeLeft--;
-        timer.innerHTML = "(" + timeLeft + "s)";
+        console.log("Timer started");
+        timeLeft = 60;
+        resendBtn.innerHTML = "Resend OTP (" + timeLeft + "s)";
+        resendBtn.classList.remove("active");
+        resendBtn.style.pointerEvents = "none";
 
-        if(timeLeft <= 0){
-            clearInterval(countdown);
-            timer.innerHTML = "";
-            resendBtn.classList.add("active");
-            resendBtn.style.pointerEvents = "auto";
-        }
+        countdown = setInterval(() => {
+            timeLeft--;
+            resendBtn.innerHTML = "Resend OTP (" + timeLeft + "s)";
+            console.log("Timer tick:", timeLeft);
 
-    }, 1000);
+            if (timeLeft <= 0) {
+                clearInterval(countdown);
+                resendBtn.innerHTML = "Resend OTP";
+                resendBtn.classList.add("active");
+                resendBtn.style.pointerEvents = "auto";
+            }
+        }, 1000);
+    }
+
+
+
+    startTimer();
+
+    resendBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+
+        const url = this.getAttribute("data-url");
+
+        if (!url) return;
+
+        // Disable button immediately to prevent double clicks
+        resendBtn.style.pointerEvents = "none";
+        resendBtn.innerHTML = "Sending...";
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "success") {
+                    alert("OTP Resent Successfully! 📩");
+                    startTimer();
+                } else {
+                    alert("Error resending OTP! ❌");
+                    // Re-enable button on error so they can try again
+                    resendBtn.innerHTML = "Resend OTP";
+                    resendBtn.style.pointerEvents = "auto";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("Something went wrong! ❌");
+                resendBtn.innerHTML = "Resend OTP";
+                resendBtn.style.pointerEvents = "auto";
+            });
+    });
 
 });

@@ -1,6 +1,6 @@
 {% load static %}
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
-<script src="{% static 'js/script.js' %}" defer></script>
+<script src="{% static 'js/script.js' %}?v={{ request.session.otp_time }}" defer></script>
 
 <div class="container">
     <form method="post" class="form-box">
@@ -14,10 +14,9 @@
 
         <p class="resend-text">
             Didn’t receive OTP?
-            <a href="{% url 'forgot-password' %}" id="resendBtn">
-                Click to resend
+            <a href="javascript:void(0)" id="resendBtn" data-url="{% url 'resend-otp' %}">
+                Resend OTP (60s)
             </a>
-            <span id="timer"></span>
         </p>
 
     </form>
